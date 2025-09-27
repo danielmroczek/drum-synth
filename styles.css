@@ -1,0 +1,156 @@
+/* Font imports */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap");
+
+/* CSS Variables for consistent theming */
+:root {
+  --primary-color: #ff6600;
+  --background-dark: #1a1a1a;
+  --text-dark: whitesmoke;
+  --surface-dark: color-mix(
+    in srgb,
+    var(--text-dark) 10%,
+    var(--background-dark)
+  );
+
+  --text-muted-dark: color-mix(in srgb, var(--text-dark) 70%, transparent);
+  --space-unit: 1em;
+  --border-radius: calc(var(--space-unit) / 2);
+
+  --breakpoint: 48em;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background-dark);
+  font-family: "Roboto Mono", monospace;
+  color: var(--text-dark);
+  min-height: max(884px, 100dvh);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout components */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-unit);
+
+  @media (min-width: var(--breakpoint)) {
+    padding: calc(var(--space-unit) * 2);
+  }
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-unit);
+
+  @media (min-width: 768px) {
+    margin-bottom: calc(var(--space-unit) * 2);
+  }
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-dark);
+
+  @media (min-width: 768px) {
+    font-size: calc(var(--space-unit) * 2);
+  }
+}
+
+/* Drum machine grid */
+.drum-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-unit);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Drum pad card */
+.drum-pad {
+  background-color: var(--surface-dark);
+  padding: var(--space-unit);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-unit);
+}
+
+.drum-pad-header {
+  width: 100%;
+  text-align: center;
+}
+
+.drum-pad-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+/* Controls grid */
+.controls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-unit);
+  width: 100%;
+  justify-items: center;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--space-unit) / 2);
+}
+
+.control-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted-dark);
+  margin: 0;
+}
+
+.control-value {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+/* Play button */
+.play-button {
+  width: 100%;
+  padding: calc(var(--space-unit) / 2);
+  background-color: var(--primary-color);
+  color: var(--text-dark);
+  font-weight: 700;
+  border-radius: var(--border-radius);
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 80%, var(--background-dark));
+  }
+
+  &:focus {
+    outline: 0.15em solid var(--primary-color);
+    outline-offset: 0.15em;
+  }
+}

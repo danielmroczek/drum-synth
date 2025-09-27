@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Drum Synth</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="rotary-knob.js" type="module"></script>
+    <script defer src="app.js" type="module"></script>
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <div class="app-container" x-data="drumApp()">
+      <header class="app-header">
+        <h1 class="app-title">Drum Synth</h1>
+      </header>
+      <main>
+        <div class="drum-grid">
+          <!-- Dynamic module template -->
+          <template x-for="module in modules" :key="module.id">
+            <div class="drum-pad">
+              <div class="drum-pad-header">
+                <h2 class="drum-pad-title" x-text="module.title"></h2>
+              </div>
+              <div class="controls-grid">
+                <!-- Dynamic parameter controls -->
+                <template x-for="param in module.parameters" :key="param.name">
+                  <div class="control-group">
+                    <span class="control-label" x-text="param.label"></span>
+                    <rotary-knob
+                      x-bind:value="params[module.id][param.name]"
+                      x-bind:min="param.min"
+                      x-bind:max="param.max"
+                      size="48"
+                      step="1"
+                      x-on:input="params[module.id][param.name] = parseFloat($event.detail.value)"
+                    ></rotary-knob>
+                    <!-- <span class="control-value" x-text="params[module.id][param.name]"></span> -->
+                  </div>
+                </template>
+              </div>
+              <!-- Dynamic volume bar - using the volume parameter if it exists -->
+              <!-- <div class="volume-bar">
+                <div
+                  class="volume-bar-fill"
+                  :style="`width: ${getVolumeParam(module.id)}%;`"
+                ></div>
+              </div> -->
+              <button class="play-button" x-on:click="playSound(module.id)">
+                Play
+              </button>
+            </div>
+          </template>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
