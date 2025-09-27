@@ -3,25 +3,22 @@
 
 /* CSS Variables for consistent theming */
 :root {
-  --primary-color: #ff6600;
-  --background-dark: #1a1a1a;
+  --primary-color: #ff6d00;
+  --background-dark: #212121;
   --text-dark: whitesmoke;
   --surface-dark: color-mix(
     in srgb,
-    var(--text-dark) 10%,
-    var(--background-dark)
+    var(--text-dark) 4%,
+    transparent
   );
 
   --text-muted-dark: color-mix(in srgb, var(--text-dark) 70%, transparent);
   --space-unit: 1em;
-  --border-radius: calc(var(--space-unit) / 2);
+  --space-unit-half: calc(var(--space-unit) / 2);
+  --space-unit-xl: calc(var(--space-unit) * 2);
+  --border-radius: var(--space-unit-half);
 
   --breakpoint: 48em;
-}
-
-/* Base styles */
-* {
-  box-sizing: border-box;
 }
 
 body {
@@ -41,7 +38,7 @@ body {
   padding: var(--space-unit);
 
   @media (min-width: var(--breakpoint)) {
-    padding: calc(var(--space-unit) * 2);
+    padding: var(--space-unit-xl);
   }
 }
 
@@ -52,7 +49,7 @@ body {
   margin-bottom: var(--space-unit);
 
   @media (min-width: 768px) {
-    margin-bottom: calc(var(--space-unit) * 2);
+    margin-bottom: var(--space-unit-xl);
   }
 }
 
@@ -63,7 +60,7 @@ body {
   color: var(--text-dark);
 
   @media (min-width: 768px) {
-    font-size: calc(var(--space-unit) * 2);
+    font-size: var(--space-unit-xl);
   }
 }
 
@@ -107,7 +104,7 @@ body {
 .controls-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-unit);
+  /* gap: var(--space-unit); */
   width: 100%;
   justify-items: center;
 }
@@ -116,7 +113,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(var(--space-unit) / 2);
+  gap: var(--space-unit-half);
 }
 
 .control-label {
@@ -136,7 +133,7 @@ body {
 /* Play button */
 .play-button {
   width: 100%;
-  padding: calc(var(--space-unit) / 2);
+  padding: var(--space-unit-half);
   background-color: var(--primary-color);
   color: var(--text-dark);
   font-weight: 700;

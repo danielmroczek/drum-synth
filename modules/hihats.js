@@ -6,7 +6,7 @@ export class HiHatsModule extends DrumModule {
         const paramDefinitions = {
             tune: { label: 'Pitch', min: 0, max: 100, default: 50, unit: '' },
             decay: { label: 'Decay', min: 0, max: 100, default: 50, unit: '' },
-            brightness: { label: 'Brightness', min: 0, max: 100, default: 50, unit: '' },
+            brightness: { label: 'Bright', min: 0, max: 100, default: 50, unit: '' },
             gain: { label: 'Volume', min: 0, max: 100, default: 60, unit: '' }
         };
         super(audioContext, 'hihats', paramDefinitions);
