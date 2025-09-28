@@ -1,7 +1,4 @@
-import { KickModule } from './modules/kick.js';
-import { SnareModule } from './modules/snare.js';
-import { ClaveModule } from './modules/clave.js';
-import { HiHatsModule } from './modules/hihats.js';
+import * as SoundModules from './modules/index.js';
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('drumApp', () => ({
@@ -9,12 +6,12 @@ document.addEventListener('alpine:init', () => {
         audioContext: null,
         soundModules: {},
         
-        // Module configuration - defines which modules to use
+        // Module configuration - defines which modules are available to user at start
         moduleConfig: [
-            { id: 'kick', title: 'Kick', class: KickModule },
-            { id: 'snare', title: 'Snare', class: SnareModule },
-            { id: 'hihats', title: 'Hat', class: HiHatsModule },
-            { id: 'clave', title: 'Clave', class: ClaveModule }
+            SoundModules.KickModule,
+            SoundModules.SnareModule,
+            SoundModules.HiHatsModule,
+            SoundModules.ClaveModule
         ],
         
         // Dynamic modules array for UI rendering
@@ -22,6 +19,9 @@ document.addEventListener('alpine:init', () => {
         
         // Parameter values for each sound module (will be initialized dynamically)
         params: {},
+        
+        // Cache of module IDs to avoid recreating instances
+        moduleIds: [],
 
         init() {
             // Initialize AudioContext
@@ -39,24 +39,31 @@ document.addEventListener('alpine:init', () => {
 
         // Initialize modules dynamically from configuration
         initializeModules() {
-            this.moduleConfig.forEach(config => {
+            this.moduleConfig.forEach((ModuleClass, index) => {
                 // Create sound module instance
-                const moduleInstance = new config.class(this.audioContext);
-                this.soundModules[config.id] = moduleInstance;
+                const moduleInstance = new ModuleClass(this.audioContext);
+                
+                // Generate automatic ID from module name (lowercase)
+                const moduleId = moduleInstance.name.toLowerCase();
+                
+                // Cache the module ID
+                this.moduleIds.push(moduleId);
+                
+                this.soundModules[moduleId] = moduleInstance;
 
                 // Get parameter definitions
                 const paramInfo = moduleInstance.getParamInfo();
                 
                 // Initialize parameter values with defaults
-                this.params[config.id] = {};
+                this.params[moduleId] = {};
                 Object.keys(paramInfo).forEach(paramName => {
-                    this.params[config.id][paramName] = paramInfo[paramName].default;
+                    this.params[moduleId][paramName] = paramInfo[paramName].default;
                 });
 
                 // Create module UI data
                 const moduleUI = {
-                    id: config.id,
-                    title: config.title,
+                    id: moduleId,
+                    title: moduleInstance.name, // Get title from module's name property (user will be able to edit this later)
                     parameters: Object.keys(paramInfo).map(paramName => ({
                         name: paramName,
                         ...paramInfo[paramName]
@@ -69,17 +76,17 @@ document.addEventListener('alpine:init', () => {
 
         // Setup parameter watchers dynamically
         setupParameterWatchers() {
-            this.moduleConfig.forEach(config => {
-                this.$watch(`params.${config.id}`, () => this.updateSoundParams(config.id), { deep: true });
+            this.moduleIds.forEach(moduleId => {
+                this.$watch(`params.${moduleId}`, () => this.updateSoundParams(moduleId), { deep: true });
             });
         },
 
         // Update all parameters in sound modules
         updateAllParams() {
-            this.moduleConfig.forEach(config => {
-                if (this.params[config.id]) {
-                    Object.keys(this.params[config.id]).forEach(param => {
-                        this.soundModules[config.id].setParam(param, this.params[config.id][param]);
+            this.moduleIds.forEach(moduleId => {
+                if (this.params[moduleId]) {
+                    Object.keys(this.params[moduleId]).forEach(param => {
+                        this.soundModules[moduleId].setParam(param, this.params[moduleId][param]);
                     });
                 }
             });

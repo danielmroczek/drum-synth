@@ -56,5 +56,4 @@ export class ClaveModule extends DrumModule {
         // stop shortly after envelope decays; add a margin
         osc.stop(now + decay + 0.06);
     }
-
 }

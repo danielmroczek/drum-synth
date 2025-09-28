@@ -64,5 +64,4 @@ export class HiHatsModule extends DrumModule {
         masterGain.gain.exponentialRampToValueAtTime(0.3 * gain, time + holdTime);
         masterGain.gain.exponentialRampToValueAtTime(0.00001, time + releaseTime);
     }
-
 }

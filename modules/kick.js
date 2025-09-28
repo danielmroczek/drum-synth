@@ -45,5 +45,4 @@ export class KickModule extends DrumModule {
         osc.start(time);
         osc.stop(time + (0.8 * decay));
     }
-
 }

@@ -69,5 +69,4 @@ export class SnareModule extends DrumModule {
         bodyOsc.stop(time + (0.5 * decay));
         noiseSource.stop(time + (0.2 * decay));
     }
-
 }
