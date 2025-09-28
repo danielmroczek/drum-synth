@@ -6,7 +6,7 @@ export class SnareModule extends DrumModule {
         const paramDefinitions = {
             tune: { label: 'Pitch', min: 0, max: 100, default: 50, unit: '' },
             decay: { label: 'Decay', min: 0, max: 100, default: 80, unit: '' },
-            snappy: { label: 'Snappy', min: 0, max: 100, default: 80, unit: '' },
+            snappy: { label: 'Snappy', min: -50, max: 50, default: 0, unit: '' },
             gain: { label: 'Volume', min: 0, max: 100, default: 75, unit: '' }
         };
         super(audioContext, 'snare', paramDefinitions);
@@ -16,11 +16,19 @@ export class SnareModule extends DrumModule {
     play() {
         this.ensureAudioContext();
 
-        // Convert 0-100 parameters to 0-1 range for audio generation
+        // Convert parameters to appropriate ranges
         const tune = this.normalizeParam('tune');
         const decay = this.normalizeParam('decay');
-        const snappy = this.normalizeParam('snappy');
+        const snappyRaw = this.getParam('snappy'); // Get raw value (-50 to 50)
+        const snappy = snappyRaw / 50; // Normalize to -1 to 1 range
         const gain = this.normalizeParam('gain');
+
+        // Calculate body and noise gains based on snappy parameter
+        // snappy = -1: only body (bodyGain = 1, noiseGain = 0)
+        // snappy = 0: equal mix (bodyGain = 0.5, noiseGain = 0.5)
+        // snappy = 1: only noise (bodyGain = 0, noiseGain = 1)
+        const bodyGainAmount = Math.max(0, (1 - snappy) * 0.5);
+        const noiseGainAmount = Math.max(0, (1 + snappy) * 0.5);
 
         const time = this.audioContext.currentTime;
         const masterGain = this.audioContext.createGain();
@@ -31,7 +39,7 @@ export class SnareModule extends DrumModule {
         const bodyFreq = 150 + (tune * 100);
         bodyOsc.type = 'triangle';
         bodyOsc.frequency.setValueAtTime(bodyFreq, time);
-        bodyGain.gain.setValueAtTime(gain, time);
+        bodyGain.gain.setValueAtTime(gain * bodyGainAmount, time);
         bodyGain.gain.exponentialRampToValueAtTime(0.001, time + (0.5 * decay));
         bodyOsc.connect(bodyGain);
 
@@ -51,7 +59,7 @@ export class SnareModule extends DrumModule {
         noiseFilter.type = 'highpass';
         noiseFilter.frequency.setValueAtTime(1000, time); // High-pass filter for snappy character
 
-        noiseGain.gain.setValueAtTime(snappy * 0.5, time); // Adjusts noise mix with snappy param
+        noiseGain.gain.setValueAtTime(gain * noiseGainAmount, time); // Crossfade based on snappy param
         noiseGain.gain.exponentialRampToValueAtTime(0.001, time + (0.2 * decay));
 
         // Connect noise nodes
