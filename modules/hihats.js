@@ -9,7 +9,7 @@ export class HiHatsModule extends DrumModule {
             brightness: { label: 'Bright', min: 0, max: 100, default: 50, unit: '' },
             gain: { label: 'Volume', min: 0, max: 100, default: 60, unit: '' }
         };
-        super(audioContext, 'hihats', paramDefinitions);
+        super(audioContext, 'hat', paramDefinitions);
     }
 
     // Generate hi-hat sound (inlined from hihats.js)
