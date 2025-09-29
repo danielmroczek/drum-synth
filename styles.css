@@ -104,16 +104,23 @@ body {
 .controls-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  /* gap: var(--space-unit); */
+  gap: var(--space-unit-half) 0;
   width: 100%;
   justify-items: center;
+
+  @media (min-width: 768px) {
+    gap: var(--space-unit) var(--space-unit-half);
+  }
 }
 
 .control-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-unit-half);
+
+  @media (min-width: 768px) {
+    gap: var(--space-unit-half);
+  }
 }
 
 .control-label {
