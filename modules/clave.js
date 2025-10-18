@@ -54,6 +54,10 @@ export class ClaveModule extends DrumModule {
         // start/stop
         osc.start(now);
         // stop shortly after envelope decays; add a margin
-        osc.stop(now + decay + 0.06);
+        const stopTime = now + decay + 0.06;
+        osc.stop(stopTime);
+
+        // Clean up nodes after playback
+        this.scheduleNodeCleanup([osc, bp, g], stopTime - now + 0.1);
     }
 }

@@ -53,4 +53,18 @@ export class DrumModule {
             this.audioContext.resume();
         }
     }
+
+    // Schedule cleanup of audio nodes after playback
+    // This prevents issues on mobile browsers where lingering nodes can block subsequent plays
+    scheduleNodeCleanup(nodes, delaySeconds) {
+        setTimeout(() => {
+            nodes.forEach(node => {
+                try {
+                    node.disconnect();
+                } catch (e) {
+                    // Ignore errors if already disconnected
+                }
+            });
+        }, delaySeconds * 1000);
+    }
 }

@@ -72,9 +72,16 @@ export class SnareModule extends DrumModule {
         masterGain.connect(this.audioContext.destination);
 
         // Start and stop all nodes
+        const bodyStopTime = time + (0.5 * decay);
+        const noiseStopTime = time + (0.2 * decay);
+        const maxStopTime = Math.max(bodyStopTime, noiseStopTime);
+        
         bodyOsc.start(time);
         noiseSource.start(time);
-        bodyOsc.stop(time + (0.5 * decay));
-        noiseSource.stop(time + (0.2 * decay));
+        bodyOsc.stop(bodyStopTime);
+        noiseSource.stop(noiseStopTime);
+
+        // Clean up nodes after playback
+        this.scheduleNodeCleanup([bodyOsc, bodyGain, noiseSource, noiseFilter, noiseGain, masterGain], maxStopTime - time + 0.1);
     }
 }

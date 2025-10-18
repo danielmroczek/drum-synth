@@ -42,7 +42,11 @@ export class KickModule extends DrumModule {
         masterGain.connect(this.audioContext.destination);
 
         // Start and stop oscillator
+        const stopTime = time + (0.8 * decay);
         osc.start(time);
-        osc.stop(time + (0.8 * decay));
+        osc.stop(stopTime);
+
+        // Clean up nodes after playback
+        this.scheduleNodeCleanup([osc, gainOsc, masterGain], stopTime - time + 0.1);
     }
 }

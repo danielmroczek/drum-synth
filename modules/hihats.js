@@ -43,6 +43,9 @@ export class HiHatsModule extends DrumModule {
         highpass.connect(masterGain);
         masterGain.connect(this.audioContext.destination);
 
+        // Track oscillators for cleanup
+        const oscillators = [];
+
         // Create the oscillators with harmonic ratios
         ratios.forEach(function(ratio) {
             const osc = this.audioContext.createOscillator();
@@ -52,6 +55,7 @@ export class HiHatsModule extends DrumModule {
             osc.connect(bandpass);
             osc.start(time);
             osc.stop(time + (0.3 * decay));
+            oscillators.push(osc);
         }.bind(this));
 
         // Define the volume envelope
@@ -63,5 +67,8 @@ export class HiHatsModule extends DrumModule {
         masterGain.gain.exponentialRampToValueAtTime(gain, time + attackTime);
         masterGain.gain.exponentialRampToValueAtTime(0.3 * gain, time + holdTime);
         masterGain.gain.exponentialRampToValueAtTime(0.00001, time + releaseTime);
+
+        // Clean up nodes after playback
+        this.scheduleNodeCleanup([...oscillators, bandpass, highpass, masterGain], releaseTime + 0.1);
     }
 }
